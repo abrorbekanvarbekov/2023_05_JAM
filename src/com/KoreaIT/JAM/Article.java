@@ -11,14 +11,6 @@ public class Article {
     public LocalDateTime regDate;
     public LocalDateTime updateDate;
 
-//    public Article(int id, String title, String body, String regDate, String updateDate) {
-//        this.id = id;
-//        this.title = title;
-//        this.body = body;
-//        this.regDate = regDate;
-//        this.updateDate = updateDate;
-//    }
-
     public Article(Map<String, Object> articleMap) {
         this.id = (int) articleMap.get("id");
         this.title = (String) articleMap.get("title");
@@ -26,5 +18,13 @@ public class Article {
         this.regDate = (LocalDateTime) articleMap.get("regDate");
         this.updateDate = (LocalDateTime) articleMap.get("updateDate");
 
+    }
+
+    public void getInfo() {
+        System.out.printf("번호  :  %s\n", this.id);
+        System.out.printf("작성날짜  :  %s\n", this.regDate);
+        System.out.printf("수정날짜  :  %s\n", this.updateDate);
+        System.out.printf("제목  :  %s\n", this.title);
+        System.out.printf("내용  :  %s\n", this.body);
     }
 }

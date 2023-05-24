@@ -105,7 +105,7 @@ public class App {
 
                     DBUtil.update(conn, sql);
 
-                    System.out.printf("%d번 게시글이 수정되었습니다.\n", id);
+                    System.out.printf("%d번 게시글은 수정되었습니다.\n", id);
                 } else if (cmd.startsWith("article detail ")) {
                     try {
                         id = Integer.parseInt(cmd.split(" ")[2]);
@@ -114,26 +114,22 @@ public class App {
                         continue;
                     }
 
-
                     SecSql sql = new SecSql();
                     sql.append("SELECT *");
                     sql.append("FROM article");
                     sql.append("WHERE id = ?", id);
-                    sql.append("ORDER BY id DESC");
 
                     Map<String, Object> foundArticle = DBUtil.selectRow(conn, sql);
 
-                    if (foundArticle.size() == 0){
-                        System.out.printf("%d번 게시글이 존재하지 않습니다.\n", id);
+                    if (foundArticle.isEmpty()){
+                        System.out.printf("%d번 게시글은 존재하지 않습니다.\n", id);
                         continue;
                     }
 
                     System.out.printf("== %s번 게시글 상세 보기 ==\n", id);
 
-                    for (String keys : foundArticle.keySet()) {
-                        Object values = foundArticle.get(keys);
-                        System.out.println(keys + "   :  " + values);
-                    }
+                    Article article = new Article(foundArticle);
+                    article.getInfo();
 
                 } else if (cmd.startsWith("article delete ")) {
                     try {
@@ -142,16 +138,22 @@ public class App {
                         System.out.println(e);
                         continue;
                     }
-
                     SecSql sql = new SecSql();
-                    sql.append("DELETE FROM article");
+                    sql.append("SELECT COUNT(*) > 0");
+                    sql.append("FROM article");
                     sql.append("WHERE id = ?", id);
-                    int delArticle = DBUtil.delete(conn, sql);
 
-                    if (delArticle == 0){
-                        System.out.printf("%d번 글이 존재하지 않습니다.\n", id);
+                    boolean foundArticle = DBUtil.selectRowBooleanValue(conn, sql);
+
+                    if (!foundArticle){
+                        System.out.printf("%d번 글은 존재하지 않습니다.\n", id);
                         continue;
                     }
+                    sql = new SecSql();
+                    sql.append("DELETE FROM article");
+                    sql.append("WHERE id = ?", id);
+                    DBUtil.delete(conn, sql);
+
                     System.out.printf("%d번 글이 삭제되었습니다.\n", id);
                 } else {
                     System.out.println("잘못 된 명령어 입니다.");

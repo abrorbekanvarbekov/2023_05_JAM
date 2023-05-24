@@ -1,11 +1,6 @@
 package util;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +21,6 @@ public class DBUtil {
 
     public static List<Map<String, Object>> selectRows(Connection dbConn, SecSql sql) throws SQLErrorException {
         List<Map<String, Object>> rows = new ArrayList<>();
-
         PreparedStatement stmt = null;
         ResultSet rs = null;
 
