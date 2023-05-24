@@ -114,7 +114,6 @@ public class App {
                         continue;
                     }
 
-                    System.out.printf("== %s번 게시글 상세 보기 ==\n", id);
 
                     SecSql sql = new SecSql();
                     sql.append("SELECT *");
@@ -123,6 +122,13 @@ public class App {
                     sql.append("ORDER BY id DESC");
 
                     Map<String, Object> foundArticle = DBUtil.selectRow(conn, sql);
+
+                    if (foundArticle.size() == 0){
+                        System.out.printf("%d번 게시글이 존재하지 않습니다.\n", id);
+                        continue;
+                    }
+
+                    System.out.printf("== %s번 게시글 상세 보기 ==\n", id);
 
                     for (String keys : foundArticle.keySet()) {
                         Object values = foundArticle.get(keys);
