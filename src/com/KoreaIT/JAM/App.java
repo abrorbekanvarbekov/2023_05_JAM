@@ -8,7 +8,7 @@ import java.sql.*;
 import java.util.*;
 
 public class App {
-
+    private int id;
     public void run() {
         System.out.println("== 프로그램 시작 ==");
         Scanner sc = new Scanner(System.in);
@@ -44,13 +44,11 @@ public class App {
                     sql.append("title = ?", title);
                     sql.append(", `body` = ?", body);
 
-                    int id = DBUtil.insert(conn, sql);
-                    System.out.printf("%d번 게시글이 생성되었습니다.\n", id);
+                    int articleId = DBUtil.insert(conn, sql);
+                    System.out.printf("%d번 게시글이 생성되었습니다.\n", articleId);
 
                 } else if (cmd.equals("article list")) {
                     System.out.println("== 게시글 목록 == ");
-                    ResultSet rs = null;
-
                     List<Article> articleList = new ArrayList<>();
 
                     SecSql sql = new SecSql();
@@ -74,11 +72,12 @@ public class App {
 
                 } else if (cmd.startsWith("article modify ")) {
                     String[] cmdBist = cmd.split(" ");
-                    if (cmdBist.length <= 2) {
-                        System.out.println("명령어를 확인해주세요.");
+                    try {
+                        id = Integer.parseInt(cmdBist[2]);
+                    } catch (NumberFormatException e) {
+                        System.out.println(e);
                         continue;
                     }
-                    int id = Integer.parseInt(cmdBist[2]);
 
                     SecSql sql = SecSql.from("SELECT COUNT(*)");
                     sql.append("FROM article");
@@ -107,6 +106,47 @@ public class App {
                     DBUtil.update(conn, sql);
 
                     System.out.printf("%d번 게시글이 수정되었습니다.\n", id);
+                } else if (cmd.startsWith("article detail ")) {
+                    try {
+                        id = Integer.parseInt(cmd.split(" ")[2]);
+                    } catch (NumberFormatException e) {
+                        System.out.println(e);
+                        continue;
+                    }
+
+                    System.out.printf("== %s번 게시글 상세 보기 ==\n", id);
+
+                    SecSql sql = new SecSql();
+                    sql.append("SELECT *");
+                    sql.append("FROM article");
+                    sql.append("WHERE id = ?", id);
+                    sql.append("ORDER BY id DESC");
+
+                    Map<String, Object> foundArticle = DBUtil.selectRow(conn, sql);
+
+                    for (String keys : foundArticle.keySet()) {
+                        Object values = foundArticle.get(keys);
+                        System.out.println(keys + "   :  " + values);
+                    }
+
+                } else if (cmd.startsWith("article delete ")) {
+                    try {
+                        id = Integer.parseInt(cmd.split(" ")[2]);
+                    } catch (NumberFormatException e) {
+                        System.out.println(e);
+                        continue;
+                    }
+
+                    SecSql sql = new SecSql();
+                    sql.append("DELETE FROM article");
+                    sql.append("WHERE id = ?", id);
+                    int delArticle = DBUtil.delete(conn, sql);
+
+                    if (delArticle == 0){
+                        System.out.printf("%d번 글이 존재하지 않습니다.\n", id);
+                        continue;
+                    }
+                    System.out.printf("%d번 글이 삭제되었습니다.\n", id);
                 } else {
                     System.out.println("잘못 된 명령어 입니다.");
                 }
