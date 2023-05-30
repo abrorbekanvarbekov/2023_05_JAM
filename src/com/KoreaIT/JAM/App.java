@@ -1,6 +1,7 @@
 package com.KoreaIT.JAM;
 
 
+import MemberController.MemberController;
 import util.DBUtil;
 import util.SecSql;
 
@@ -9,6 +10,8 @@ import java.util.*;
 
 public class App {
     private int id;
+    private List<Member> memberList = new ArrayList<>();
+
     public void run() {
         System.out.println("== 프로그램 시작 ==");
         Scanner sc = new Scanner(System.in);
@@ -21,6 +24,7 @@ public class App {
 
             conn = DriverManager.getConnection(url, "root", "");
 
+            MemberController memberController = new MemberController(conn, sc);
             while (true) {
                 System.out.printf("명령어) =>  ");
                 String cmd = sc.nextLine().trim();
@@ -30,7 +34,25 @@ public class App {
                     break;
                 }
 
-                if (cmd.equals("article write")) {
+                if (cmd.equals("member join")) {
+                    memberController.doJoin();
+                } else if (cmd.equals("member login")) {
+                    System.out.println("== 로그인 페이지 == ");
+                    while (true) {
+                        System.out.println("로그인 아아디 =>  ");
+                        String loginId = sc.nextLine().trim();
+                        System.out.println("로그인 비밀번호 =>  ");
+                        String loginPw = sc.nextLine();
+                        for (Member member : memberList) {
+                            if (loginId.equals(member.loginId) == false) {
+                                break;
+                            }
+                        }
+                        System.out.println("로그인 아이디가 일치하지 않습니다.");
+                        continue;
+                    }
+
+                } else if (cmd.equals("article write")) {
                     System.out.println("== 게시글 작성 == ");
                     System.out.printf("title ni kiriting =>    ");
                     String title = sc.nextLine();
@@ -121,7 +143,7 @@ public class App {
 
                     Map<String, Object> foundArticle = DBUtil.selectRow(conn, sql);
 
-                    if (foundArticle.isEmpty()){
+                    if (foundArticle.isEmpty()) {
                         System.out.printf("%d번 게시글은 존재하지 않습니다.\n", id);
                         continue;
                     }
@@ -145,7 +167,7 @@ public class App {
 
                     boolean foundArticle = DBUtil.selectRowBooleanValue(conn, sql);
 
-                    if (!foundArticle){
+                    if (!foundArticle) {
                         System.out.printf("%d번 글은 존재하지 않습니다.\n", id);
                         continue;
                     }
@@ -174,4 +196,5 @@ public class App {
         }
         sc.close();
     }
+
 }
