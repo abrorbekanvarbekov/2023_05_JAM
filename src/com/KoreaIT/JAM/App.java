@@ -33,22 +33,22 @@ public class App {
                 }
 
                 if (cmd.equals("member join")) {
-                    if (MemberController.session == true){
+                    if (MemberController.session != null){
                         System.out.println("로그인 아웃 후 사용해주세요!");
                         continue;
                     }
                     memberController.doJoin();
                 } else if (cmd.equals("member login")) {
-                    if (MemberController.session == true){
+                    if (MemberController.session != null){
                         System.out.println("로그인 아웃 후 사용해주세요!");
                         continue;
                     }
                     memberController.doLogin();
                 } else if (cmd.equals("member logout")) {
-                    MemberController.session = false;
+                    MemberController.session = null;
                     System.out.println("로그인 아웃 되었습니다.");
                 } else if (cmd.equals("article write")) {
-                    if (MemberController.session == false){
+                    if (MemberController.session == null){
                         System.out.println("로그인 후 사용해주세요!");
                         continue;
                     }
@@ -56,7 +56,7 @@ public class App {
                 } else if (cmd.equals("article list")) {
                     articleController.showArticleList();
                 } else if (cmd.startsWith("article modify ")) {
-                    if (MemberController.session == false){
+                    if (MemberController.session == null){
                         System.out.println("로그인 후 사용해주세요!");
                         continue;
                     }
@@ -64,7 +64,7 @@ public class App {
                 } else if (cmd.startsWith("article detail ")) {
                     articleController.showArticleDetail(cmd);
                 } else if (cmd.startsWith("article delete ")) {
-                    if (MemberController.session == false){
+                    if (MemberController.session == null){
                         System.out.println("로그인 후 사용해주세요!");
                         continue;
                     }

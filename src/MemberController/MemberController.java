@@ -1,6 +1,7 @@
 package MemberController;
 
 import MemberService.MemberService;
+import com.KoreaIT.JAM.Member;
 
 import java.sql.Connection;
 import java.util.Scanner;
@@ -8,12 +9,12 @@ import java.util.Scanner;
 public class MemberController {
     private Scanner sc;
     private MemberService memberService;
-    public static boolean session;
+    public static Member session;
 
     public MemberController(Connection conn, Scanner sc) {
         this.sc = sc;
         this.memberService = new MemberService(conn);
-        this.session = false;
+        this.session = null;
     }
 
     public void doJoin() {
@@ -108,18 +109,18 @@ public class MemberController {
             }
             break;
         }
-        boolean isLoginIdExist = memberService.isLoginIdExist(loginId);
-        if (isLoginIdExist == false){
+
+        Member member = memberService.isLoginIdExist(loginId);
+        if (member == null){
             System.out.println("로그인 아이디가 존재하지 않습니다.");
             return;
         }
 
-        boolean isLoginPwExist = memberService.isLoginPwExist(loginPw);
-        if (isLoginPwExist == false){
+        if (member.loginPw.equals(loginPw) == false){
             System.out.println("로그인 비밀번호가 일치하지 않습니다.");
             return;
         }
-        session = true;
-        System.out.printf("%s님 환영합니다.\n", loginId);
+        session = member;
+        System.out.printf("%s님 환영합니다.\n", member.loginId);
     }
 }
