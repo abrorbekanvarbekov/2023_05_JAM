@@ -33,32 +33,41 @@ public class App {
                 }
 
                 if (cmd.equals("member join")) {
-                    memberController.doJoin();
-                } else if (cmd.equals("member login")) {
-                    System.out.println("== 로그인 페이지 == ");
-                    while (true) {
-                        System.out.println("로그인 아아디 =>  ");
-                        String loginId = sc.nextLine().trim();
-                        System.out.println("로그인 비밀번호 =>  ");
-                        String loginPw = sc.nextLine();
-                        for (Member member : memberList) {
-                            if (loginId.equals(member.loginId) == false) {
-                                break;
-                            }
-                        }
-                        System.out.println("로그인 아이디가 일치하지 않습니다.");
+                    if (MemberController.session == true){
+                        System.out.println("로그인 아웃 후 사용해주세요!");
                         continue;
                     }
-
+                    memberController.doJoin();
+                } else if (cmd.equals("member login")) {
+                    if (MemberController.session == true){
+                        System.out.println("로그인 아웃 후 사용해주세요!");
+                        continue;
+                    }
+                    memberController.doLogin();
+                } else if (cmd.equals("member logout")) {
+                    MemberController.session = false;
+                    System.out.println("로그인 아웃 되었습니다.");
                 } else if (cmd.equals("article write")) {
+                    if (MemberController.session == false){
+                        System.out.println("로그인 후 사용해주세요!");
+                        continue;
+                    }
                     articleController.doWrite();
                 } else if (cmd.equals("article list")) {
                     articleController.showArticleList();
                 } else if (cmd.startsWith("article modify ")) {
+                    if (MemberController.session == false){
+                        System.out.println("로그인 후 사용해주세요!");
+                        continue;
+                    }
                     articleController.doModify(cmd);
                 } else if (cmd.startsWith("article detail ")) {
                     articleController.showArticleDetail(cmd);
                 } else if (cmd.startsWith("article delete ")) {
+                    if (MemberController.session == false){
+                        System.out.println("로그인 후 사용해주세요!");
+                        continue;
+                    }
                     articleController.doDelete(cmd);
                 } else {
                     System.out.println("잘못 된 명령어 입니다.");

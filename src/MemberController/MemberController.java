@@ -8,10 +8,12 @@ import java.util.Scanner;
 public class MemberController {
     private Scanner sc;
     private MemberService memberService;
+    public static boolean session;
 
     public MemberController(Connection conn, Scanner sc) {
         this.sc = sc;
         this.memberService = new MemberService(conn);
+        this.session = false;
     }
 
     public void doJoin() {
@@ -79,5 +81,45 @@ public class MemberController {
         }
 
         memberService.doJoinQuery(loginId, loginPw, name);
+    }
+
+    public void doLogin() {
+        System.out.println("== 로그인 페이지 == ");
+        String loginId = null;
+        String loginPw = null;
+        while (true) {
+            System.out.printf("로그인 아아디 =>  ");
+            loginId = sc.nextLine().trim();
+
+            if (loginId.length() == 0){
+                System.out.println("로그인 아이디를 입력해주세요.");
+                continue;
+            }
+
+            while (true){
+                System.out.printf("로그인 비밀번호 =>  ");
+                loginPw = sc.nextLine();
+
+                if (loginPw.length() == 0){
+                    System.out.println("로그인 비밀번호를 입력해주세요.");
+                    continue;
+                }
+                break;
+            }
+            break;
+        }
+        boolean isLoginIdExist = memberService.isLoginIdExist(loginId);
+        if (isLoginIdExist == false){
+            System.out.println("로그인 아이디가 존재하지 않습니다.");
+            return;
+        }
+
+        boolean isLoginPwExist = memberService.isLoginPwExist(loginPw);
+        if (isLoginPwExist == false){
+            System.out.println("로그인 비밀번호가 일치하지 않습니다.");
+            return;
+        }
+        session = true;
+        System.out.printf("%s님 환영합니다.\n", loginId);
     }
 }

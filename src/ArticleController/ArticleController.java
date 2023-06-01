@@ -2,6 +2,7 @@ package ArticleController;
 
 import ArticleService.ArticleService;
 import com.KoreaIT.JAM.Article;
+import com.KoreaIT.JAM.Member;
 
 import java.sql.Connection;
 import java.util.List;
@@ -105,4 +106,5 @@ public class ArticleController {
 
         System.out.printf("%d번 글이 삭제되었습니다.\n", id);
     }
+
 }

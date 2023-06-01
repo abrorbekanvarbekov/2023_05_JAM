@@ -30,4 +30,22 @@ public class MemberDao {
         DBUtil.insert(conn, sql);
         System.out.printf("%s님 환영합니다.\n", loginId);
     }
+
+    public boolean isLoginIdExist(String loginId) {
+        SecSql sql = new SecSql();
+        sql.append("SELECT COUNT(*) > 0");
+        sql.append("FROM member");
+        sql.append("WHERE loginId = ?", loginId);
+
+        return DBUtil.selectRowBooleanValue(conn, sql);
+    }
+
+    public boolean isLoginPwExist(String loginPw) {
+        SecSql sql = new SecSql();
+        sql.append("SELECT COUNT(*) > 0");
+        sql.append("FROM member");
+        sql.append("WHERE loginPw = ?", loginPw);
+
+        return DBUtil.selectRowBooleanValue(conn, sql);
+    }
 }
