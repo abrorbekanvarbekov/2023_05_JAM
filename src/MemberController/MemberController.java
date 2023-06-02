@@ -1,23 +1,28 @@
 package MemberController;
 
 import MemberService.MemberService;
+import Session.Session;
 import com.KoreaIT.JAM.Member;
+import util.Util;
 
 import java.sql.Connection;
+import java.util.List;
 import java.util.Scanner;
 
 public class MemberController {
     private Scanner sc;
     private MemberService memberService;
-    public static Member session;
 
     public MemberController(Connection conn, Scanner sc) {
         this.sc = sc;
         this.memberService = new MemberService(conn);
-        this.session = null;
     }
 
     public void doJoin() {
+        if (Session.session != null){
+            System.out.println("로그인 아웃 후 사용해주세요!");
+            return;
+        }
         System.out.println("== 회원 가입 == ");
         String loginId = null;
         String loginPw = null;
@@ -85,6 +90,10 @@ public class MemberController {
     }
 
     public void doLogin() {
+        if (Session.session != null){
+            System.out.println("로그인 아웃 후 사용해주세요!");
+            return;
+        }
         System.out.println("== 로그인 페이지 == ");
         String loginId = null;
         String loginPw = null;
@@ -112,7 +121,7 @@ public class MemberController {
 
         Member member = memberService.isLoginIdExist(loginId);
         if (member == null){
-            System.out.println("로그인 아이디가 존재하지 않습니다.");
+            System.out.printf("%s는 아이디가 존재하지 않습니다.\n");
             return;
         }
 
@@ -120,7 +129,21 @@ public class MemberController {
             System.out.println("로그인 비밀번호가 일치하지 않습니다.");
             return;
         }
-        session = member;
+        Session.session = member;
         System.out.printf("%s님 환영합니다.\n", member.loginId);
     }
+
+    public void doLogout() {
+        Session.session = null;
+        System.out.println("로그인 아웃 되었습니다.");
+    }
+
+    public void showMemberList() {
+        System.out.println("== 회원 목록 == ");
+        List<Member> memberList = memberService.getMemberList();
+        for (Member member : memberList) {
+            System.out.printf("%d   |   %s  |   %s    |  %s\n", member.id, member.loginId, Util.datetimeFormat(member.regDate), Util.datetimeFormat(member.updateDate));
+        }
+    }
+
 }

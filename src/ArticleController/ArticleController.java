@@ -1,8 +1,9 @@
 package ArticleController;
 
 import ArticleService.ArticleService;
+import Session.Session;
 import com.KoreaIT.JAM.Article;
-import com.KoreaIT.JAM.Member;
+import util.Util;
 
 import java.sql.Connection;
 import java.util.List;
@@ -18,13 +19,17 @@ public class ArticleController {
     }
 
     public void doWrite() {
+        if (Session.session == null){
+            System.out.println("로그인 후 사용해주세요!");
+            return;
+        }
         System.out.println("== 게시글 작성 == ");
         System.out.printf("title ni kiriting =>    ");
         String title = sc.nextLine();
         System.out.printf("bodyni kiriting =>   ");
         String body = sc.nextLine();
 
-        int articleId = articleService.doWrite(title, body);
+        int articleId = articleService.doWrite(title, body, Session.session.id);
 
         System.out.printf("%d번 게시글이 생성되었습니다.\n", articleId);
     }
@@ -38,12 +43,17 @@ public class ArticleController {
             System.out.println("존재하는 게시글이 없습니다.");
         }
 
+        System.out.println("번호    |    제목    |    등록날짜    |   수정 날짜");
         for (Article article : articleList) {
-            System.out.printf("%d   |   %s  |   %s    |  %s\n", article.id, article.title, article.regDate, article.updateDate);
+            System.out.printf("%d   |   %s  |   %s    |  %s    |  %s\n", article.id, article.title, Util.datetimeFormat(article.regDate), Util.datetimeFormat(article.updateDate), article.writer);
         }
     }
 
     public void doModify(String cmd) {
+        if (Session.session == null){
+            System.out.println("로그인 후 사용해주세요!");
+            return;
+        }
         String[] cmdBist = cmd.split(" ");
         try {
             id = Integer.parseInt(cmdBist[2]);
@@ -88,6 +98,10 @@ public class ArticleController {
     }
 
     public void doDelete(String cmd) {
+        if (Session.session == null){
+            System.out.println("로그인 후 사용해주세요!");
+            return;
+        }
         try {
             id = Integer.parseInt(cmd.split(" ")[2]);
         } catch (NumberFormatException e) {

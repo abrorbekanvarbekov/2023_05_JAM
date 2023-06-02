@@ -5,6 +5,8 @@ import com.KoreaIT.JAM.Article;
 import com.KoreaIT.JAM.Member;
 
 import java.sql.Connection;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class MemberService {
@@ -27,8 +29,16 @@ public class MemberService {
         if (memberMap.isEmpty()){
             return null;
         }
-        Member member = new Member(memberMap);
-        return member;
+        return  new Member(memberMap);
     }
 
+    public List<Member> getMemberList() {
+        List<Map<String, Object>> memberMapList = memberDao.getMemberMapList();
+        List<Member> memberList = new ArrayList<>();
+
+        for (Map<String, Object> memberMap : memberMapList){
+            memberList.add(new Member(memberMap));
+        }
+        return memberList;
+    }
 }

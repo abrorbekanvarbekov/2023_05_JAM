@@ -33,41 +33,22 @@ public class App {
                 }
 
                 if (cmd.equals("member join")) {
-                    if (MemberController.session != null){
-                        System.out.println("로그인 아웃 후 사용해주세요!");
-                        continue;
-                    }
                     memberController.doJoin();
                 } else if (cmd.equals("member login")) {
-                    if (MemberController.session != null){
-                        System.out.println("로그인 아웃 후 사용해주세요!");
-                        continue;
-                    }
                     memberController.doLogin();
+                } else if (cmd.equals("member list")) {
+                    memberController.showMemberList();
                 } else if (cmd.equals("member logout")) {
-                    MemberController.session = null;
-                    System.out.println("로그인 아웃 되었습니다.");
+                    memberController.doLogout();
                 } else if (cmd.equals("article write")) {
-                    if (MemberController.session == null){
-                        System.out.println("로그인 후 사용해주세요!");
-                        continue;
-                    }
                     articleController.doWrite();
                 } else if (cmd.equals("article list")) {
                     articleController.showArticleList();
                 } else if (cmd.startsWith("article modify ")) {
-                    if (MemberController.session == null){
-                        System.out.println("로그인 후 사용해주세요!");
-                        continue;
-                    }
                     articleController.doModify(cmd);
                 } else if (cmd.startsWith("article detail ")) {
                     articleController.showArticleDetail(cmd);
                 } else if (cmd.startsWith("article delete ")) {
-                    if (MemberController.session == null){
-                        System.out.println("로그인 후 사용해주세요!");
-                        continue;
-                    }
                     articleController.doDelete(cmd);
                 } else {
                     System.out.println("잘못 된 명령어 입니다.");

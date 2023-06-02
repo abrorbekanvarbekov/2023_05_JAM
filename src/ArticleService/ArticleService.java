@@ -16,20 +16,20 @@ public class ArticleService {
     }
 
 
-    public int doWrite(String title, String body) {
-        return articleDao.doWrite(title, body);
+    public int doWrite(String title, String body, int session_id) {
+        return articleDao.doWrite(title, body, session_id);
     }
 
     public List<Article> getArticleList() {
-        List<Map<String, Object>> articleListMap = articleDao.showArticleList();
+        List<Map<String, Object>> articleListMap = articleDao.getArticleList();
 
         List<Article> articleList = new ArrayList<>();
         for (Map<String, Object> articleMap : articleListMap) {
             articleList.add(new Article(articleMap));
         }
-
         return  articleList;
     }
+
     public int getArticleCount(int id) {
         return articleDao.getArticleCount(id);
     }
@@ -39,7 +39,7 @@ public class ArticleService {
     }
 
     public Article getArticleMap(int id) {
-        Map<String, Object> foundArticleMap = articleDao.getArticleMap(id);
+        Map<String, Object> foundArticleMap = articleDao.getArticle(id);
 
         if (foundArticleMap.isEmpty()) {
             return null;

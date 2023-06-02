@@ -4,10 +4,12 @@ import util.DBUtil;
 import util.SecSql;
 
 import java.sql.Connection;
+import java.util.List;
 import java.util.Map;
 
 public class MemberDao {
     private Connection conn;
+
     public MemberDao(Connection conn) {
         this.conn = conn;
     }
@@ -40,21 +42,11 @@ public class MemberDao {
 
         return DBUtil.selectRow(conn, sql);
     }
-//    public boolean isLoginIdExist(String loginId) {
-//        SecSql sql = new SecSql();
-//        sql.append("SELECT COUNT(*) > 0");
-//        sql.append("FROM member");
-//        sql.append("WHERE loginId = ?", loginId);
-//
-//        return DBUtil.selectRowBooleanValue(conn, sql);
-//    }
 
-//    public boolean isLoginPwExist(String loginPw) {
-//        SecSql sql = new SecSql();
-//        sql.append("SELECT COUNT(*) > 0");
-//        sql.append("FROM member");
-//        sql.append("WHERE loginPw = ?", loginPw);
-//
-//        return DBUtil.selectRowBooleanValue(conn, sql);
-//    }
+    public List<Map<String, Object>> getMemberMapList() {
+        SecSql sql = new SecSql();
+        sql.append("SELECT * FROM member");
+        sql.append("ORDER BY ID DESC");
+        return DBUtil.selectRows(conn, sql);
+    }
 }
