@@ -1,9 +1,11 @@
 package ArticleDao;
 
+import com.KoreaIT.JAM.Article;
 import util.DBUtil;
 import util.SecSql;
 
 import java.sql.Connection;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +28,20 @@ public class ArticleDao {
         return DBUtil.insert(conn, sql);
     }
 
-    public List<Map<String, Object>> getArticleList() {
+    public List<Map<String, Object>> getArticleList(String searchKeyword) {
+
+        if (searchKeyword.length() > 0){
+            System.out.println("검색어   :   " + searchKeyword);
+
+            SecSql sql = new SecSql();
+            sql.append("SELECT A.* , M.name");
+            sql.append("FROM article as A");
+            sql.append("INNER JOIN  `member` as M");
+            sql.append("ON A.memberId = M.id");
+            sql.append("where A.title like '%"+searchKeyword+"%'");
+            return DBUtil.selectRows(conn, sql);
+        }
+
         SecSql sql = new SecSql();
         sql.append("SELECT A.* , M.name");
         sql.append("FROM article as A");
@@ -81,5 +96,14 @@ public class ArticleDao {
         sql.append("DELETE FROM article");
         sql.append("WHERE id = ?", id);
         DBUtil.delete(conn, sql);
+    }
+
+    public void addViews(Article article, int view) {
+        SecSql sql = new SecSql();
+        sql.append("UPDATE article");
+        sql.append("SET views = ?", view);
+        sql.append("WHERE id = ?", article.id);
+
+        DBUtil.update(conn, sql);
     }
 }

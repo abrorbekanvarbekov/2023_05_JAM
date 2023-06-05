@@ -42,8 +42,8 @@ public class App {
                     memberController.doLogout();
                 } else if (cmd.equals("article write")) {
                     articleController.doWrite();
-                } else if (cmd.equals("article list")) {
-                    articleController.showArticleList();
+                } else if (cmd.startsWith("article list")) {
+                    articleController.showArticleList(cmd);
                 } else if (cmd.startsWith("article modify ")) {
                     articleController.doModify(cmd);
                 } else if (cmd.startsWith("article detail ")) {

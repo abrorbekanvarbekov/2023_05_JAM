@@ -20,18 +20,24 @@ public class ArticleService {
         return articleDao.doWrite(title, body, session_id);
     }
 
-    public List<Article> getArticleList() {
-        List<Map<String, Object>> articleListMap = articleDao.getArticleList();
+    public List<Article> getArticleList(String searchKeyword) {
+        List<Map<String, Object>> articleListMap = articleDao.getArticleList(searchKeyword);
 
         List<Article> articleList = new ArrayList<>();
         for (Map<String, Object> articleMap : articleListMap) {
             articleList.add(new Article(articleMap));
         }
+
         return  articleList;
     }
 
-    public int getArticleCount(int id) {
-        return articleDao.getArticleCount(id);
+    public Article getArticleCount(int id) {
+        Map<String, Object> foundArticleMap = articleDao.getArticle(id);
+
+        if (foundArticleMap.isEmpty()) {
+            return null;
+        }
+        return new Article(foundArticleMap);
     }
 
     public void doModify(String title, String body, int id) {
@@ -51,4 +57,7 @@ public class ArticleService {
         articleDao.remove(id);
     }
 
+    public void addViews(Article article, int view) {
+       articleDao.addViews(article, view);
+    }
 }

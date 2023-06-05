@@ -34,13 +34,15 @@ public class ArticleController {
         System.out.printf("%d번 게시글이 생성되었습니다.\n", articleId);
     }
 
-    public void showArticleList() {
+    public void showArticleList(String cmd) {
         System.out.println("== 게시글 목록 == ");
+        String searchKeyword = cmd.substring("article list".length()).trim();
 
-        List<Article> articleList  = articleService.getArticleList();
+        List<Article> articleList  = articleService.getArticleList(searchKeyword);
 
         if (articleList.size() == 0) {
             System.out.println("존재하는 게시글이 없습니다.");
+            return;
         }
 
         System.out.println("번호    |    제목    |    등록날짜    |   수정 날짜");
@@ -54,6 +56,7 @@ public class ArticleController {
             System.out.println("로그인 후 사용해주세요!");
             return;
         }
+
         String[] cmdBist = cmd.split(" ");
         try {
             id = Integer.parseInt(cmdBist[2]);
@@ -62,10 +65,15 @@ public class ArticleController {
             return;
         }
 
-        int foundArticle = articleService.getArticleCount(id);
+        Article foundArticle = articleService.getArticleCount(id);
 
-        if (foundArticle == 0) {
+        if (foundArticle == null) {
             System.out.printf("%d번 게시글이 존재하지 않습니다.\n", id);
+            return;
+        }
+
+        if (Session.session.id != foundArticle.memberId){
+            System.out.println("해당 게시물 수정 권한이 없습니다.");
             return;
         }
 
@@ -93,6 +101,10 @@ public class ArticleController {
             System.out.printf("%d번 게시글은 존재하지 않습니다.\n", id);
             return;
         }
+
+        int view = ++article.views;
+        articleService.addViews(article, view);
+
         System.out.printf("== %s번 게시글 상세 보기 ==\n", id);
         article.getInfo();
     }
@@ -109,10 +121,15 @@ public class ArticleController {
             return;
         }
 
-        int foundArticle = articleService.getArticleCount(id);
+        Article foundArticle = articleService.getArticleCount(id);
 
-        if (foundArticle == 0) {
+        if (foundArticle == null) {
             System.out.printf("%d번 글은 존재하지 않습니다.\n", id);
+            return;
+        }
+
+        if (Session.session.id != foundArticle.memberId){
+            System.out.println("해당 게시물에 삭제 권한이 없습니다.");
             return;
         }
 
