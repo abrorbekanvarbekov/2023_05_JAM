@@ -1,11 +1,9 @@
 package ArticleDao;
 
-import com.KoreaIT.JAM.Article;
 import util.DBUtil;
 import util.SecSql;
 
 import java.sql.Connection;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -30,24 +28,15 @@ public class ArticleDao {
 
     public List<Map<String, Object>> getArticleList(String searchKeyword) {
 
-        if (searchKeyword.length() > 0){
-            System.out.println("검색어   :   " + searchKeyword);
-
-            SecSql sql = new SecSql();
-            sql.append("SELECT A.* , M.name");
-            sql.append("FROM article as A");
-            sql.append("INNER JOIN  `member` as M");
-            sql.append("ON A.memberId = M.id");
-            sql.append("where A.title like '%"+searchKeyword+"%'");
-            return DBUtil.selectRows(conn, sql);
-        }
-
         SecSql sql = new SecSql();
         sql.append("SELECT A.* , M.name");
         sql.append("FROM article as A");
         sql.append("INNER JOIN  `member` as M");
         sql.append("ON A.memberId = M.id");
-        sql.append("ORDER BY A.id DESC;");
+        if (searchKeyword.length() > 0) {
+            sql.append("WHERE A.title LIKE CONCAT('%', ?, '%')", searchKeyword);
+        }
+        sql.append("ORDER BY A.id DESC");
 
         return DBUtil.selectRows(conn, sql);
     }
@@ -98,12 +87,12 @@ public class ArticleDao {
         DBUtil.delete(conn, sql);
     }
 
-    public void addViews(Article article, int view) {
+    public int increaseVCnt(int id) {
         SecSql sql = new SecSql();
         sql.append("UPDATE article");
-        sql.append("SET views = ?", view);
-        sql.append("WHERE id = ?", article.id);
+        sql.append("SET views = views + 1");
+        sql.append("WHERE id = ?", id);
 
-        DBUtil.update(conn, sql);
+        return DBUtil.update(conn, sql);
     }
 }

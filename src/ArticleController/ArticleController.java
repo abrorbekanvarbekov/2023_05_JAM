@@ -35,7 +35,6 @@ public class ArticleController {
     }
 
     public void showArticleList(String cmd) {
-        System.out.println("== 게시글 목록 == ");
         String searchKeyword = cmd.substring("article list".length()).trim();
 
         List<Article> articleList  = articleService.getArticleList(searchKeyword);
@@ -45,9 +44,13 @@ public class ArticleController {
             return;
         }
 
-        System.out.println("번호    |    제목    |    등록날짜    |   수정 날짜");
+        System.out.println("== 게시글 목록 ==");
+        if(searchKeyword.length() > 0){
+            System.out.println("검색어     :   " + searchKeyword);
+        }
+        System.out.println("번호    |    제목    |    작성자    |    날짜    |      조회수");
         for (Article article : articleList) {
-            System.out.printf("%d   |   %s  |   %s    |  %s    |  %s\n", article.id, article.title, Util.datetimeFormat(article.regDate), Util.datetimeFormat(article.updateDate), article.writer);
+            System.out.printf("%d   |   %s  |   %s    |  %s    |  %d\n", article.id, article.title,article.writer, Util.datetimeFormat(article.regDate), article.views);
         }
     }
 
@@ -96,14 +99,13 @@ public class ArticleController {
             return;
         }
 
+        int affectedRow = articleService.increaseVCnt(id);
+
         Article article = articleService.getArticleMap(id);
-        if (article == null){
+        if (affectedRow == 0){
             System.out.printf("%d번 게시글은 존재하지 않습니다.\n", id);
             return;
         }
-
-        int view = ++article.views;
-        articleService.addViews(article, view);
 
         System.out.printf("== %s번 게시글 상세 보기 ==\n", id);
         article.getInfo();

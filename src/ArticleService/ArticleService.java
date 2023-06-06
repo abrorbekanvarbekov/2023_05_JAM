@@ -57,7 +57,7 @@ public class ArticleService {
         articleDao.remove(id);
     }
 
-    public void addViews(Article article, int view) {
-       articleDao.addViews(article, view);
+    public int increaseVCnt(int id) {
+       return articleDao.increaseVCnt(id);
     }
 }
